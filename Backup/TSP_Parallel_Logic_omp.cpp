@@ -151,7 +151,7 @@ int main(int argc, char **argv)
     double bfs_start = omp_get_wtime();
 
 // calling BFS function for each vertex
-#pragma omp parallel for num_threads(thread_count)
+#pragma omp parallel for num_threads(thread_count) schedule(guided)
     for (int i = 0; i < n; i++)
     {
         BFS(i, arr, vis, n, v_path, w_path);
@@ -164,6 +164,16 @@ int main(int argc, char **argv)
     // print input size
     cout << endl
          << "Number of vertices (input size): " << n;
+
+    // print number of threads assigned
+#pragma omp parallel
+    {
+#pragma omp single
+        {
+            cout << endl
+                 << "Number of threads: " << omp_get_num_threads();
+        }
+    }
 
     // print initialization time
     cout << endl
