@@ -96,7 +96,6 @@ int main()
     srand(time(NULL));
 
     // initialization start
-    clock_t init_start = clock();
     for (int i = 0; i <= n - 2; i++)
     {
         for (int j = i + 1; j < n; j++)
@@ -121,10 +120,7 @@ int main()
             vis[i][j] = 0;
         }
     }
-    clock_t init_end = clock();
-
-    // calculate time taken for initialization (weights array, visited array)
-    double init_time = double(init_end - init_start) / CLOCKS_PER_SEC;
+    // initialization end
 
     // printing array for verifying correctness of program
     cout << endl
@@ -139,30 +135,11 @@ int main()
     }
     cout << endl;
 
-    clock_t bfs_start = clock();
     // calling BFS function for each vertex
     for (int i = 0; i < n; i++)
     {
         BFS(i, arr, vis, n, v_path, w_path);
     }
-    clock_t bfs_end = clock();
-
-    // calculate time taken for finding Hamiltonian cycle for each node
-    double bfs_time = double(bfs_end - bfs_start) / CLOCKS_PER_SEC;
-
-    // print input size
-    cout << endl
-         << "Number of vertices (input size): " << n;
-
-    // print initialization time
-    cout << endl
-         << "Initialization time: " << (int)(init_time / 60) << " minutes "
-         << fixed << setprecision(6) << fmod(init_time, 60) << " seconds";
-
-    // print processing time
-    cout << endl
-         << "BFS time: " << (int)(bfs_time / 60) << " minutes "
-         << fixed << setprecision(6) << fmod(bfs_time, 60) << " seconds" << endl;
 
     // free memory
     for (int i = 0; i < n; i++)

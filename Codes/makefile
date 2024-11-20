@@ -14,6 +14,12 @@ parallel_omp:
 parallel_omp_logic:
 	g++ -fopenmp TSP_Parallel_Logic_omp.cpp -o TSP_PL_OMP
 
+graphs_omp:
+	python3 Graphs_omp.py
+
+sort_omp:
+	python3 Metrics_Sort_omp.py
+
 # Rule to remove the executable and object files created by g++ compilation
 clean:
 	@rm -f TSP_S TSP_SL TSP_P_OMP TSP_PL_OMP *.o

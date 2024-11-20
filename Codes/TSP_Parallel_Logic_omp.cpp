@@ -101,8 +101,6 @@ int main(int argc, char **argv)
 
     srand(time(NULL));
 
-    // initialization start
-    double init_start = omp_get_wtime();
     for (int i = 0; i <= n - 2; i++)
     {
         for (int j = i + 1; j < n; j++)
@@ -129,11 +127,7 @@ int main(int argc, char **argv)
             vis[i][j] = 0;
         }
     }
-    double init_end = omp_get_wtime();
     // initialization end
-
-    // calculate time taken for initialization (weights array, visited array)
-    double init_time = init_end - init_start;
 
     // printing array for verifying correctness of program
     cout << endl
@@ -148,42 +142,12 @@ int main(int argc, char **argv)
     }
     cout << endl;
 
-    double bfs_start = omp_get_wtime();
-
 // calling BFS function for each vertex
 #pragma omp parallel for num_threads(thread_count) schedule(guided)
     for (int i = 0; i < n; i++)
     {
         BFS(i, arr, vis, n, v_path, w_path);
     }
-    double bfs_end = omp_get_wtime();
-
-    // calculate time taken for finding Hamiltonian cycle for each node
-    double bfs_time = bfs_end - bfs_start;
-
-    // print input size
-    cout << endl
-         << "Number of vertices (input size): " << n;
-
-    // print number of threads assigned
-#pragma omp parallel
-    {
-#pragma omp single
-        {
-            cout << endl
-                 << "Number of threads: " << omp_get_num_threads();
-        }
-    }
-
-    // print initialization time
-    cout << endl
-         << "Initialization time: " << (int)(init_time / 60) << " minutes "
-         << fixed << setprecision(6) << fmod(init_time, 60) << " seconds";
-
-    // print processing time
-    cout << endl
-         << "BFS time: " << (int)(bfs_time / 60) << " minutes "
-         << fixed << setprecision(6) << fmod(bfs_time, 60) << " seconds" << endl;
 
     // free memory
     for (int i = 0; i < n; i++)
