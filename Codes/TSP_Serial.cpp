@@ -10,11 +10,10 @@
 #include <vector>
 using namespace std;
 
-// Helper function to check if an entry exists in the file and update it
-void update_metrics(int n, int threads, double time) {
-    // Open the file for reading and writing
-    ifstream inFile("Metrics_omp.txt");
-    ofstream outFile("Metrics_omp_tmp.txt");
+// Helper function to check if an entry exists in the file and update it for OpenMP
+void update_metrics(int n, int threads, double time, const string& filename) {
+    ifstream inFile(filename);
+    ofstream outFile(filename + "_tmp.txt");
 
     string line;
     bool updated = false;
@@ -27,19 +26,17 @@ void update_metrics(int n, int threads, double time) {
         ss >> file_n >> file_threads >> file_time;
 
         if (file_n == n && file_threads == threads) {
-            // If the combination of n and threads exists and new time is smaller, update it
             if (time < file_time) {
                 outFile << n << " " << threads << " " << time << endl;
                 updated = true;
             } else {
-                outFile << line << endl;  // Retain the old entry if new time is not smaller
+                outFile << line << endl;
             }
         } else {
-            outFile << line << endl;  // Copy the existing entry to the new file
+            outFile << line << endl;
         }
     }
 
-    // If the entry was not updated, append the new entry
     if (!updated) {
         outFile << n << " " << threads << " " << time << endl;
     }
@@ -47,9 +44,13 @@ void update_metrics(int n, int threads, double time) {
     inFile.close();
     outFile.close();
 
-    // Replace old file with the new file
-    remove("Metrics_omp.txt");
-    rename("Metrics_omp_tmp.txt", "Metrics_omp.txt");
+    remove(filename.c_str());
+    rename((filename + "_tmp.txt").c_str(), filename.c_str());
+}
+
+// Helper function to check if an entry exists in the file and update it for MPI
+void update_metrics_mpi(int n, double time) {
+    update_metrics(n, 1, time, "Metrics_mpi.txt");  // MPI is serialized, so use thread count 1
 }
 
 void BFS(int node, int **arr, int **vis, int n) {
@@ -59,10 +60,7 @@ void BFS(int node, int **arr, int **vis, int n) {
     int visited_count = 0;
     int cost = 0;
 
-    // mark starting node as visited
     vis[node][node] = 1;
-
-    // increment visited nodes count --- all nodes should be visited
     visited_count++;
 
     while (visited_count < n) {
@@ -86,20 +84,17 @@ void BFS(int node, int **arr, int **vis, int n) {
 }
 
 int main(int argc, char **argv) {
-    // Serial version - thread_count is set to 1
     int thread_count = 1;
 
     cout << "Enter number of vertices {min 2 vertices}: ";
     int n;
     cin >> n;
 
-    // allocation of array - entries represent edge weights
     int **arr = new int *[n];
     for (int i = 0; i < n; i++) {
         arr[i] = new int[n];
     }
 
-    // allocation of visited array - entries represent visited vertex
     int **vis = new int *[n];
     for (int i = 0; i < n; i++) {
         vis[i] = new int[n];
@@ -107,7 +102,6 @@ int main(int argc, char **argv) {
 
     srand(time(NULL));
 
-    // initialization start
     clock_t init_start = clock();
     for (int i = 0; i <= n - 2; i++) {
         for (int j = i + 1; j < n; j++) {
@@ -117,57 +111,45 @@ int main(int argc, char **argv) {
         }
     }
 
-    // mark diagonal entries 0 since there are no loops
     for (int i = 0; i < n; i++) {
         arr[i][i] = 0;
     }
 
-    // initialize visited array
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
             vis[i][j] = 0;
         }
     }
     clock_t init_end = clock();
-    // initialization end
 
-    // calculate time taken for initialization (weights array, visited array)
     double init_time = double(init_end - init_start) / CLOCKS_PER_SEC;
 
-    // processing start
     clock_t bfs_start = clock();
 
-    // calling BFS function for each vertex (no parallelization in serial version)
     for (int i = 0; i < n; i++) {
         BFS(i, arr, vis, n);
     }
     clock_t bfs_end = clock();
 
-    // calculate time taken for finding Hamiltonian cycle for each node
     double bfs_time = double(bfs_end - bfs_start) / CLOCKS_PER_SEC;
 
-    // print input size
     cout << endl
          << "Number of vertices (input size): " << n;
 
-    // print number of threads (for serial version, only 1 thread)
     cout << endl
          << "Number of threads: " << thread_count;
 
-    // print initialization time
     cout << endl
          << "Initialization time: " << (int)(init_time / 60) << " minutes "
          << fixed << setprecision(6) << fmod(init_time, 60) << " seconds";
 
-    // print processing time
     cout << endl
          << "BFS time: " << (int)(bfs_time / 60) << " minutes "
          << fixed << setprecision(6) << fmod(bfs_time, 60) << " seconds" << endl;
 
-    // Update the metrics file with the new data (serial version will have thread_count = 1)
-    update_metrics(n, thread_count, bfs_time);
+    update_metrics(n, thread_count, bfs_time, "Metrics_omp.txt");
+    update_metrics_mpi(n, bfs_time);  // Update for MPI file
 
-    // free memory
     for (int i = 0; i < n; i++) {
         delete[] arr[i];
         delete[] vis[i];
