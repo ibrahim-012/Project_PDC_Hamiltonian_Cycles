@@ -59,7 +59,6 @@ def plot_graphs_together(speedup, efficiency):
     plt.tight_layout()
     plt.show()
 
-
 # Main function to run the workflow
 def main():
     file_path = 'Metrics_mpi.txt'  # Update the file path to Metrics_mpi.txt
