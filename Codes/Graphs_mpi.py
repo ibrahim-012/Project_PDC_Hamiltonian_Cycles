@@ -42,6 +42,7 @@ def plot_graphs_together(speedup, efficiency):
     axes[0].set_ylabel('Speedup')
     axes[0].legend()
     axes[0].grid(True)
+    axes[0].set_xticks(sorted(set(x for x, _ in values)))  # Set integer tick marks
 
     # Efficiency Graph
     for n, values in efficiency.items():
@@ -52,10 +53,12 @@ def plot_graphs_together(speedup, efficiency):
     axes[1].set_ylabel('Efficiency')
     axes[1].legend()
     axes[1].grid(True)
+    axes[1].set_xticks(sorted(set(x for x, _ in values)))  # Set integer tick marks
 
     # Adjust layout to prevent overlapping
     plt.tight_layout()
     plt.show()
+
 
 # Main function to run the workflow
 def main():

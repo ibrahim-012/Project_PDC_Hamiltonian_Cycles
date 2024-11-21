@@ -36,6 +36,9 @@ parallel_mpi_logic:
 run_parallel_mpi_logic:
 	mpiexec --use-hwthread-cpus -np $(ARG) ./TSP_PL_MPI
 
+run_mpi_script:
+	./mpi_script.sh
+
 graphs_omp:
 	python3 Graphs_omp.py
 
