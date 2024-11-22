@@ -48,9 +48,11 @@ run_script_mpi:
 	./script_mpi.sh
 
 graphs_omp:
+	python3 Metrics_Sort_omp.py
 	python3 Graphs_omp.py
 
 graphs_mpi:
+	python3 Metrics_Sort_mpi.py
 	python3 Graphs_mpi.py
 
 sort_omp:
