@@ -70,4 +70,4 @@ graphs_mpi:
 
 # Rule to remove the executable and object files created by g++ compilation
 clean:
-	@rm -f TSP_S TSP_SL TSP_P_OMP TSP_PL_OMP TSP_P_MPI *.o
+	@rm -f TSP_S TSP_SL TSP_P_OMP TSP_PL_OMP TSP_P_MPI TSP_PL_MPI *.o
