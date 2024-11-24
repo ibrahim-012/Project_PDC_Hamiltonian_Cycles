@@ -36,7 +36,6 @@ parallel_mpi_logic:
 run_parallel_mpi_logic:
 	mpiexec --use-hwthread-cpus -np $(ARG) ./TSP_PL_MPI
 
-
 # Rule to automate running of parallel OpenMP file
 # n = 1000 to 8000, step_size = 1000, num_threads = 2, 4, 8
 run_script_omp:
@@ -47,17 +46,23 @@ run_script_omp:
 run_script_mpi:
 	./script_mpi.sh
 
-graphs_omp:
-	python3 Graphs_omp.py
-
-graphs_mpi:
-	python3 Graphs_mpi.py
-
+# Rule to sort OpenMP metrics for drawing graphs in orderly fashion
 sort_omp:
 	python3 Metrics_Sort_omp.py
 
+# Rule to sort MPI metrics for drawing graphs in orderly fashion
 sort_mpi:
 	python3 Metrics_Sort_mpi.py
+
+# Rule to make speedup and efficiency graphs for OpenMP computations
+graphs_omp:
+	python3 Metrics_Sort_omp.py
+	python3 Graphs_omp.py
+
+# Rule to make speedup and efficiency graphs for MPI computations
+graphs_mpi:
+	python3 Metrics_Sort_mpi.py
+	python3 Graphs_mpi.py
 
 # Rule to remove the executable and object files created by g++ compilation
 clean:
