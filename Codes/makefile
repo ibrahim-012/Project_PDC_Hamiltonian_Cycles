@@ -47,19 +47,23 @@ run_script_mpi:
 	./script_mpi.sh
 
 # Rule to sort OpenMP metrics for drawing graphs in orderly fashion
+# Use python instead of python3 if running on Windows
 sort_omp:
 	python3 Metrics_Sort_omp.py
 
 # Rule to sort MPI metrics for drawing graphs in orderly fashion
+# Use python instead of python3 if running on Windows
 sort_mpi:
 	python3 Metrics_Sort_mpi.py
 
 # Rule to make speedup and efficiency graphs for OpenMP computations
+# Use python instead of python3 if running on Windows
 graphs_omp:
 	python3 Metrics_Sort_omp.py
 	python3 Graphs_omp.py
 
 # Rule to make speedup and efficiency graphs for MPI computations
+# Use python instead of python3 if running on Windows
 graphs_mpi:
 	python3 Metrics_Sort_mpi.py
 	python3 Graphs_mpi.py
