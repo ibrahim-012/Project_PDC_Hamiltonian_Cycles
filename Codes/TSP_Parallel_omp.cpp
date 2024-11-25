@@ -112,6 +112,7 @@ int main(int argc, char **argv)
 
     // allocation of array - entries represent edge weights
     int **arr = new int *[n];
+#pragma omp parallel for num_threads(thread_count)
     for (int i = 0; i < n; i++)
     {
         arr[i] = new int[n];
@@ -119,6 +120,7 @@ int main(int argc, char **argv)
 
     // allocation of visited array - entries represent visited vertices
     int **vis = new int *[n];
+#pragma omp parallel for num_threads(thread_count)
     for (int i = 0; i < n; i++)
     {
         vis[i] = new int[n];
@@ -203,6 +205,7 @@ int main(int argc, char **argv)
     update_metrics(n, thread_count, bfs_time);
 
     // free memory
+#pragma omp parallel for num_threads(thread_count)    
     for (int i = 0; i < n; i++)
     {
         delete[] arr[i];
