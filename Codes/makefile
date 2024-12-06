@@ -70,7 +70,7 @@ runtimes_omp:
 	python3 Runtimes_omp.py
 
 # Rule to make execution time graphs for MPI computations
-runtimes_omp:
+runtimes_mpi:
 	make sort_mpi
 	python3 Runtimes_mpi.py
 
